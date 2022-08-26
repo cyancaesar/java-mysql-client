@@ -1,9 +1,13 @@
 package gui.panel;
 
 import net.miginfocom.swing.MigLayout;
+import service.DatabaseService;
+import service.IObserver;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainPanel extends JPanel {
 
@@ -12,10 +16,9 @@ public class MainPanel extends JPanel {
             "[center, grow]0[center, grow]",
             "[center]0[center, grow]"
     );
-
-    private JPanel controlPanel;
-    private JPanel consolePanel;
-    private JPanel logPanel;
+    private ControlPanel controlPanel;
+    private ConsolePanel consolePanel;
+    private LogPanel logPanel;
 
     public MainPanel() {
         initPanel();
@@ -32,5 +35,6 @@ public class MainPanel extends JPanel {
         add(consolePanel, "wrap, grow");
         add(logPanel, "span, grow");
     }
+
 
 }

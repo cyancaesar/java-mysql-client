@@ -1,8 +1,8 @@
 package gui.panel;
 
-import model.Event;
-import model.IConnectionListener;
 import net.miginfocom.swing.MigLayout;
+import service.DatabaseService;
+import service.IObserver;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,8 +13,9 @@ import java.awt.*;
 
 public class ControlPanel extends JPanel {
 
-    private JPanel connectionPanel;
-    private JPanel taskPanel;
+    private ConnectionPanel connectionPanel;
+    private OperationPanel operationPanel;
+
 
     private final LayoutManager mgr = new MigLayout(
             "insets 0",
@@ -23,6 +24,7 @@ public class ControlPanel extends JPanel {
     );
 
     public ControlPanel() {
+
         initPanel();
     }
 
@@ -31,11 +33,10 @@ public class ControlPanel extends JPanel {
         setPreferredSize(new Dimension(200,200));
 
         connectionPanel = new ConnectionPanel();
-        taskPanel = new OperationPanel();
+        operationPanel = new OperationPanel();
 
         add(connectionPanel, "wrap, grow");
-        add(taskPanel, "grow");
-
+        add(operationPanel, "grow");
     }
 
 }

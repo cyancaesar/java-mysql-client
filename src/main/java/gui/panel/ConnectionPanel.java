@@ -4,7 +4,7 @@ import controller.ConnectionController;
 import model.Event;
 import model.IConnectionListener;
 import net.miginfocom.swing.MigLayout;
-import service.Service;
+import service.ServiceManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -34,7 +34,10 @@ public class ConnectionPanel extends JPanel implements IConnectionListener {
 
     public ConnectionPanel() {
         connectionController = new ConnectionController(this);
-//        ServiceManager.registerService(Service.DATABASE_CONNECTION, this);
+        ServiceManager.DATABASE_SERVICE.registerObserver(Event.DB_CONNECTED, this);
+        ServiceManager.DATABASE_SERVICE.registerObserver(Event.DB_DISCONNECTED, this);
+//        new DatabaseService().registerObserver(Event.DB_CONNECTED, this);
+//        new DatabaseService().registerObserver(Event.DB_DISCONNECTED, this);
         initPanel();
     }
 
@@ -49,9 +52,9 @@ public class ConnectionPanel extends JPanel implements IConnectionListener {
         connectionLabel = new JLabel("Not connected");
 
         hostField = new JTextField("127.0.0.1", 20);
-        userField = new JTextField(20);
+        userField = new JTextField("root",20);
         passField = new JPasswordField(20);
-        dbnameField = new JTextField(20);
+        dbnameField = new JTextField("certificates",20);
 
         connectButton = new JButton("Connect");
 
@@ -73,27 +76,20 @@ public class ConnectionPanel extends JPanel implements IConnectionListener {
     public JTextField getHostField() {
         return hostField;
     }
-
     public JTextField getUserField() {
         return userField;
     }
-
     public JPasswordField getPassField() {
         return passField;
     }
-
     public JTextField getDbnameField() {
         return dbnameField;
-    }
-
-    public void setConnectionLabel(String connectionLabel) {
-        this.connectionLabel.setText(connectionLabel);
     }
 
     @Override
     public void update(Event event) {
         if (event == Event.DB_CONNECTED) {
-//            connectionLabel.setText("Connected: ".concat(ServiceManager.DATABASE_SERVICE.getDatabaseName()));
+            System.out.println("Connected");
         }
     }
 }

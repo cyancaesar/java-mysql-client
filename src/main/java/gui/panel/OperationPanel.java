@@ -3,6 +3,7 @@ package gui.panel;
 import model.Event;
 import model.IConnectionListener;
 import net.miginfocom.swing.MigLayout;
+import service.ServiceManager;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,8 +24,9 @@ public class OperationPanel extends JPanel implements IConnectionListener {
     private JButton simButton6;
 
     public OperationPanel() {
+        ServiceManager.DATABASE_SERVICE.registerObserver(Event.DB_CONNECTED, this);
+        ServiceManager.DATABASE_SERVICE.registerObserver(Event.DB_DISCONNECTED, this);
         initPanel();
-//        ServiceManager.registerService(Service.DATABASE_CONNECTION, this);
     }
 
     private void initPanel() {
@@ -62,6 +64,7 @@ public class OperationPanel extends JPanel implements IConnectionListener {
         simButton5.setEnabled(true);
         simButton6.setEnabled(true);
     }
+
 
     @Override
     public void update(Event event) {

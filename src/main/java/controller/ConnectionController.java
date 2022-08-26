@@ -1,18 +1,18 @@
 package controller;
 
 import gui.panel.ConnectionPanel;
-import model.Database;
 import model.DatabaseAccount;
+import service.DatabaseService;
+import service.ServiceManager;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.Connection;
-import java.sql.SQLException;
 
 public class ConnectionController implements ActionListener {
 
     private ConnectionPanel connectionPanel;
+    private DatabaseService databaseService = ServiceManager.DATABASE_SERVICE;
 
     public ConnectionController(ConnectionPanel view) {
         connectionPanel = view;
@@ -27,8 +27,7 @@ public class ConnectionController implements ActionListener {
             databaseAccount.setAccountInfo("username", connectionPanel.getUserField().getText());
             databaseAccount.setAccountInfo("password", new String(connectionPanel.getPassField().getPassword()));
 
-            Database database = Database.getInstance();
-            boolean result = database.connect(databaseAccount);
+            boolean result = databaseService.connect(databaseAccount);
             if (!result) {
                 JOptionPane.showMessageDialog(null, "Not connected");
             }

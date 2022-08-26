@@ -1,21 +1,24 @@
 package model;
 
 import javax.swing.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.sql.*;
+import java.util.*;
 
 public class Database {
 
     private static Database INSTANCE = null;
-    private Connection connection;
     private Map<Event, List<IConnectionListener>> observers;
 
+    private Connection connection;
+    private Statement statement;
+    private ResultSet resultSet;
+
+    private boolean isConnected = false;
+
     private Database() {
-        Arrays.stream(Event.values()).forEach(System.out::println);
+        System.out.println("Created: " + Database.class.getName());
+        observers = new HashMap<>();
+        Arrays.stream(Event.values()).forEach(event -> observers.put(event, new ArrayList<>()));
     }
 
     public static Database getInstance() {
@@ -45,13 +48,48 @@ public class Database {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             connection = DriverManager.getConnection(url, username, password);
+            statement = connection.createStatement();
         }
         catch (ClassNotFoundException | SQLException classNotFoundException) {
+            isConnected = false;
             return false;
         }
+        isConnected = true;
 
+        notifyObservers(Event.DB_CONNECTED);
         return true;
     }
+    public boolean query(String query) {
+        boolean flag = false;
+        try {
+            flag = statement.execute(query);
+        }
+        catch (SQLException sqlException) {
+            System.out.println("Exception: " + sqlException.getMessage());
+        }
+        if (flag)
+            notifyObservers(Event.DB_UPDATED);
+        return flag;
+    }
+
+    public String getLastResult() {
+        StringBuilder result = new StringBuilder();
+        try {
+            resultSet = statement.getResultSet();
+            int columns = resultSet.getMetaData().getColumnCount();
+            while (resultSet.next()) {
+                for (int i = 1; i <= columns; ++i) {
+                    result.append(resultSet.getString(i)).append(" | ");
+                }
+                result.append('\n');
+            }
+        }
+        catch (SQLException sqlException) {
+            System.out.println("Exception: " + sqlException.getMessage());
+        }
+        return result.toString();
+    }
+
 
     public String getDatabaseName() {
         try {
@@ -61,5 +99,15 @@ public class Database {
             JOptionPane.showMessageDialog(null, sqlException.getMessage(), "Connection Error", JOptionPane.ERROR_MESSAGE);
         }
         return "";
+    }
+    public String getLastMessage() {
+        String msg = "";
+        try {
+            msg = connection.getSchema();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return msg;
     }
 }

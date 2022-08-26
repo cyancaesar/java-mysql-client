@@ -1,5 +1,6 @@
 import gui.MainWindow;
 import com.formdev.flatlaf.*;
+import com.formdev.flatlaf.intellijthemes.FlatMonokaiProIJTheme;
 
 import javax.swing.*;
 
@@ -8,7 +9,8 @@ public class MainClass {
 
         Runnable run = () -> {
             try {
-                FlatLightLaf.setup();
+//                FlatLightLaf.setup();
+                FlatMonokaiProIJTheme.setup();
                 new MainWindow();
             }
             catch (Exception e) {
